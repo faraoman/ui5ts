@@ -4,13 +4,14 @@ export interface API {
     version: string;
 }
 
-export type Symbol = SymbolNamespace|SymbolClass|SymbolEnum|SymbolInterface;
+export type Symbol = SymbolNamespace|SymbolClass|SymbolEnum|SymbolInterface|SymbolTypeDef;
 
 export enum Kind {
     Namespace   = "namespace",
     Class       = "class",
     Enum        = "enum",
-    Interface   = "interface"
+    Interface   = "interface",
+    TypeDef     = "typedef"
 }
 
 export enum Visibility {
@@ -133,6 +134,32 @@ export interface SymbolInterface {
     static: boolean;// all true
     deprecated?: DeprecatedInfo;
     experimental?: ExperimentalInfo;
+}
+/*{
+    "kind": "typedef",
+    "name": "sap.ui.model.odata.v2.ODataAnnotations.errorParameters",
+    "basename": "errorParameters",
+    "resource": "sap/ui/model/odata/v2/ODataAnnotations.js",
+    "module": "sap/ui/model/odata/v2/ODataAnnotations",
+    "export": "errorParameters",
+    "static": true,
+    "visibility": "public",
+    "description": "Parameters of the <code>error</code> event"
+}
+*/
+export interface SymbolTypeDef {
+    kind: Kind.TypeDef;
+
+    visibility: Visibility;
+
+    name: string;
+    basename: string;
+    module: string;
+    resource: string;
+    description?: string;
+
+    export?: string;
+    static: boolean;// all true
 }
 
 export interface ClassContructor {

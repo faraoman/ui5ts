@@ -96,17 +96,21 @@ export default class Generator
     private execute(apiList: ui5.API[], version: string): void
     {
         this.createExports(apiList);
+        // console.clear();
+        console.log("All apis downloaded!");
         this.createDefinitions(apiList, version);
     }
 
     private createDefinitions(apiList: ui5.API[], version: string): void
     {
+        console.log("createDefinitions");
         let allSymbols = apiList.map(api => api.symbols).reduce((a, b) => a.concat(b));
 
         allSymbols.sort((a, b) => a.name.localeCompare(b.name));
 
         let rootNodes = TreeBuilder.createFromSymbolsArray(this.config, allSymbols);
         for (var node of rootNodes) {
+            console.log(`createDefinitions: ${node.name}`);
             let output: string[] = [];
             let tsCode = node.generateTypeScriptCode(output);
             this.createFile(`${this.config.output.definitionsPath}${version.replace(/[.]\d+$/, "")}/${node.fullName}.d.ts`, output.join(""));

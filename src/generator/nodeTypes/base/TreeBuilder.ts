@@ -5,6 +5,7 @@ import Namespace    from "../Namespace";
 import Class        from "../Class";
 import Interface    from "../Interface";
 import Enum         from "../Enum";
+import TypeDef from '../TypeDef';
 
 export default class TreeBuilder {
 
@@ -22,7 +23,11 @@ export default class TreeBuilder {
             case ui5.Kind.Class:     return new Class       (config, symbol, children, indentationLevel);
             case ui5.Kind.Interface: return new Interface   (config, symbol, children, indentationLevel);
             case ui5.Kind.Enum:      return new Enum        (config, symbol, children, indentationLevel);
-            default: throw new Error("Unknown symbol kind.");
+            case ui5.Kind.TypeDef:   return new TypeDef     (config, symbol, children, indentationLevel);
+            default: {
+                console.log("BOOOO:",symbol);
+                throw new Error(`Unknown symbol kind.`);
+            }
         }
     }
 
