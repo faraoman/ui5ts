@@ -3,3 +3,5 @@ node_modules
 *.js.map
 *.d.ts
 ui5ts-*.tgz
+ui5-types
+exports

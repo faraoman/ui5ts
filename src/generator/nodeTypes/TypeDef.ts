@@ -1,7 +1,8 @@
-import * as ui5     from "../ui5api";
-import Config       from "../GeneratorConfig";
-import TreeNode     from "./base/TreeNode";
+import * as ui5 from "../ui5api";
+import Config from "../GeneratorConfig";
+import TreeNode from "./base/TreeNode";
 import EnumProperty from "./EnumProperty";
+import { debug } from "request";
 
 export default class TypeDef extends TreeNode {
 
@@ -24,7 +25,11 @@ export default class TypeDef extends TreeNode {
 
         this.printTsDoc(output, this.description);
         output.push(`${this.indentation}${declareOrExport}enum ${name} {\r\n`);
-        this.properties.forEach(p => p.generateTypeScriptCode(output));
+        if (this.properties) {
+            this.properties.forEach(p => p.generateTypeScriptCode(output));
+        }/* else {
+            debugger;
+        }*/
         output.push(`${this.indentation}}\r\n`);
     }
 }

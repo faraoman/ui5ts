@@ -5,15 +5,14 @@
         "indentation":      "    "
     },
     "input": {
-        "apiBaseUrl":   "https://sapui5.hana.ondemand.com/{{VERSION}}/test-resources",
+        "apiBaseUrl":   "https://openui5.hana.ondemand.com/{{VERSION}}/test-resources",
         "jsonLocation": "designtime/api.json",
-        "versions": ["1.52.30"],
+        "versions": ["1.60.34"],
         "namespaces": [
               "sap/m"
             , "sap/tnt"
             , "sap/ui/commons"
             , "sap/ui/core"
-            , "sap/ui/demokit"
             , "sap/ui/dt"
             , "sap/ui/layout"
             , "sap/ui/suite"

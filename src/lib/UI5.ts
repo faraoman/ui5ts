@@ -4,6 +4,8 @@
  * sap.ui.base.Object
  * @param name Full name of the class. This parameter will be passed to BaseClass.extend(name, ...) method at runtime.
  */
+//@ts-ignore
+//@ts-nocheck
 function UI5(name: string): Function
 {
     return function (target: FunctionConstructor): FunctionConstructor

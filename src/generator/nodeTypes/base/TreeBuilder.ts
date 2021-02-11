@@ -24,9 +24,12 @@ export default class TreeBuilder {
             case ui5.Kind.Interface: return new Interface   (config, symbol, children, indentationLevel);
             case ui5.Kind.Enum:      return new Enum        (config, symbol, children, indentationLevel);
             case ui5.Kind.TypeDef:   return new TypeDef     (config, symbol, children, indentationLevel);
+            // case ui5.Kind.Function:   return new Function   (config, symbol, children, indentationLevel);
             default: {
-                console.log("BOOOO:",symbol);
-                throw new Error(`Unknown symbol kind.`);
+                console.log("BOOOO:", symbol);
+                if (symbol.kind != "function") {
+                    throw new Error(`Unknown symbol kind.`);
+                }
             }
         }
     }

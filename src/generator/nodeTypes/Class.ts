@@ -55,16 +55,20 @@ export default class Class extends TreeNode {
     }
     
     private generateTypeScriptCodeJQuery(output: string[]): void {
-        var jQueryFullName = this.getJQueryFullName();
-        let extend = this.baseClass ? ` extends ${this.baseClass}` : "";
+        try {
+            var jQueryFullName = this.getJQueryFullName();
+            let extend = this.baseClass ? ` extends ${this.baseClass}` : "";
 
-        this.printTsDoc(output, this.description);
-        output.push(`${this.indentation}declare class ${jQueryFullName}${extend} {\r\n`);
-        this.properties.forEach(p => p.generateTypeScriptCode(output));
-        this.methods.forEach(m => m.generateTypeScriptCode(output));
-        //TODO: support class children (there is only one case, it's an enum. Could be converted in a static object literal)
-        //this.children.forEach(c => c.generateTypeScriptCode(output));
-        output.push(`${this.indentation}}\r\n`);
+            this.printTsDoc(output, this.description);
+            output.push(`${this.indentation}declare class ${jQueryFullName}${extend} {\r\n`);
+            this.properties.forEach(p => p.generateTypeScriptCode(output));
+            this.methods.forEach(m => m.generateTypeScriptCode(output));
+            //TODO: support class children (there is only one case, it's an enum. Could be converted in a static object literal)
+            //this.children.forEach(c => c.generateTypeScriptCode(output));
+            output.push(`${this.indentation}}\r\n`);
+        } catch (error) {
+            console.log("\x1b[31m", `\n\n  Error: ${error}\n\n  Stack:${error.stack}`);
+        }
     }
 
 
@@ -85,24 +89,30 @@ export default class Class extends TreeNode {
     }
 
     private static fillInstancesMaps(nodes: TreeNode[], instancesByName: Map<string, Class>, instancesByBaseClass: Map<string, Class[]>): any {
-        for (const node of nodes) {
-            if (node instanceof Class) {
-                if (instancesByName.has(node.fullName)) {
-                    throw new Error(`Class '${node.fullName}' is already in the map.`);
-                }
-                instancesByName.set(node.fullName, node);
+       try{
+            for (const node of nodes) {
+                if (node instanceof Class) {
+                    if (instancesByName.has(node.fullName)) {
+                        throw new Error(`Class '${node.fullName}' is already in the map.`);
+                    }
+                    instancesByName.set(node.fullName, node);
 
-                if (node.baseClass && node.baseClass.match(/\./)) {
-                    const arr = instancesByBaseClass.get(node.baseClass) || [];
-                    arr.push(node);
-                    instancesByBaseClass.set(node.baseClass, arr);
+                    if (node.baseClass && node.baseClass.match(/\./)) {
+                        const arr = instancesByBaseClass.get(node.baseClass) || [];
+                        arr.push(node);
+                        instancesByBaseClass.set(node.baseClass, arr);
+                    }
+                }
+
+                if (node) {
+                    const children = (<any>node).children;
+                    if (children) {
+                        this.fillInstancesMaps(children, instancesByName, instancesByBaseClass);
+                    }
                 }
             }
-            
-            const children = (<any>node).children;
-            if (children) {
-                this.fillInstancesMaps(children, instancesByName, instancesByBaseClass);
-            }
+        } catch(err) {
+            debugger;
         }
     }
 

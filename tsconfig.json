@@ -10,5 +10,9 @@
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "sourceMap": true
-    }
+    },
+    "exclude": [
+        "exports",
+        "ui5-types"
+    ]
 }

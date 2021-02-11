@@ -25,6 +25,15 @@ export default class Generator
     }
 
     private generateVersions(versions: string[]): void {
+        if (fs.existsSync("./exports")) {
+            fs.rmdirSync("./exports", { recursive: true });
+            if (fs.existsSync("./exports")) fs.rmdirSync("./exports", { recursive: true });
+            if (fs.existsSync("./exports")) fs.rmdirSync("./exports");
+            if (fs.existsSync("./exports")) fs.rmdirSync("./exports");
+            if (!fs.existsSync("./exports")) fs.mkdirSync("./exports");
+        }else{
+            fs.mkdirSync("./exports");
+        }
         if (versions.length) {
             let version = versions[0];
             
@@ -42,7 +51,7 @@ export default class Generator
                     this.generateVersions(versions.slice(1))
                 })
                 .catch(error => {
-                    console.log("\x1b[31m", `\n\n  Error: ${error}\n\n`);
+                    console.log("\x1b[31m", `\n\n  Error: ${error}\n\n  Stack:${error.stack}`);
                     process.exit(1);
                 });
         }
@@ -110,10 +119,13 @@ export default class Generator
 
         let rootNodes = TreeBuilder.createFromSymbolsArray(this.config, allSymbols);
         for (var node of rootNodes) {
-            console.log(`createDefinitions: ${node.name}`);
-            let output: string[] = [];
-            let tsCode = node.generateTypeScriptCode(output);
-            this.createFile(`${this.config.output.definitionsPath}${version.replace(/[.]\d+$/, "")}/${node.fullName}.d.ts`, output.join(""));
+            if (node && node["name"]) {
+                console.log(`createDefinitions: ${node.name}`);
+                let output: string[] = [];
+                let tsCode = node.generateTypeScriptCode(output);
+                // this.createFile(`${this.config.output.definitionsPath}${version.replace(/[.]\d+$/, "")}/${node.fullName}.d.ts`, output.join(""));
+                this.createFile(`${this.config.output.definitionsPath}${version}/${node.fullName}.d.ts`, output.join(""));
+            }
         }
 
         // Uncomment this to see the details, statistics and example values of the different types of API members
@@ -234,11 +246,16 @@ export default class Generator
     
     private createFile(path: string, content: string): void
     {
-        var dirPieces = path.replace(/\/[^/]+$/, "").split("/");
+        var _path = path;
+        if (_path.indexOf(":") > -1){
+            _path = _path.split(":").join("/");
+        }
+        var dirPieces = _path.replace(/\/[^/]+$/, "").split("/");
     
         // make sure that the directory exists
         for (let i = 0, dir = dirPieces[0]; i < dirPieces.length; i++, dir += `/${dirPieces[i]}`)
         {
+            // const dirCleaned = dir.split(":").join("_")
             if (!fs.existsSync(dir))
             {
                 fs.mkdirSync(dir);
@@ -246,13 +263,20 @@ export default class Generator
         }
     
         // write the file
-        fs.writeFile(path, content, (err) => {
+        try{
+            fs.writeFileSync(_path,content);
+        } catch(err) {
             if(err) {
                 return console.log(err);
             }
+        }
+        // fs.writeFile(path, content, (err: any) => {
+        //     if(err) {
+        //         return console.log(err);
+        //     }
         
-            //console.log(`File saved: ${path}`);
-        });
+        //     //console.log(`File saved: ${path}`);
+        // });
     }
 }
 
